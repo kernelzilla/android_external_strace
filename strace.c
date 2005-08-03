@@ -1217,6 +1217,14 @@ int sig;
 	int error = 0;
 #ifdef LINUX
 	int status, resumed;
+	struct tcb *zombie = NULL;
+
+	/* If the group leader is lingering only because of this other
+	   thread now dying, then detach the leader as well.  */
+	if ((tcp->flags & TCB_CLONE_THREAD) &&
+	    tcp->parent->nclone_threads == 1 &&
+	    (tcp->parent->flags & TCB_EXITING))
+		zombie = tcp->parent;
 #endif
 
 	if (tcp->flags & TCB_BPTSET)
@@ -1375,6 +1383,12 @@ int sig;
 		fprintf(stderr, "Process %u detached\n", tcp->pid);
 
 	droptcb(tcp);
+
+#ifdef LINUX
+	if (zombie != NULL)
+		error = detach(zombie) || error;
+#endif
+
 	return error;
 }
 
@@ -1952,9 +1966,11 @@ handle_group_exit(struct tcb *tcp, int sig)
 			fprintf(stderr,
 				"PANIC: handle_group_exit: %d leader %d\n",
 				tcp->pid, leader ? leader->pid : -1);
-		droptcb(tcp);	/* Already died.  */
+		detach(tcp);	/* Already died.  */
 	}
 	else {
+		/* Mark that we are taking the process down.  */
+		tcp->flags |= TCB_EXITING | TCB_GROUP_EXITING;
 		if (tcp->flags & TCB_ATTACHED) {
 		  	if (leader != NULL && leader != tcp) {
 				if (leader->flags & TCB_ATTACHED) {
