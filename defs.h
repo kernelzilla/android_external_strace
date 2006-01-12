@@ -397,7 +397,7 @@ struct xlat {
 #define TRACE_SIGNAL	020	/* Trace signal-related syscalls. */
 
 extern struct tcb **tcbtab;
-extern int qual_flags[];
+extern int *qual_flags;
 extern int debug, followfork, followvfork;
 extern int rflag, tflag, dtime, cflag, xflag, qflag;
 extern int acolumn;
