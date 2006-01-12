@@ -61,6 +61,7 @@
 #define MS_POSIXACL	(1<<16)	/* VFS does not apply the umask */
 #define MS_ACTIVE	(1<<30)
 #define MS_NOUSER	(1<<31)
+#define MS_MGC_VAL	0xc0ed0000	/* Magic flag number */
 #endif /* HAVE_ANDROID_OS */
 
 #include <sys/socket.h>
@@ -88,6 +89,7 @@
 #include <linux/sysctl.h>
 
 static const struct xlat mount_flags[] = {
+	{ MS_MGC_VAL,	"MS_MGC_VAL"	},
 	{ MS_RDONLY,	"MS_RDONLY"	},
 	{ MS_NOSUID,	"MS_NOSUID"	},
 	{ MS_NODEV,	"MS_NODEV"	},
@@ -122,7 +124,11 @@ struct tcb *tcp;
 			tprintf("%#lx", tcp->u_arg[2]);
 		tprintf(", ");
 		printflags(mount_flags, tcp->u_arg[3], "MS_???");
-		tprintf(", %#lx", tcp->u_arg[4]);
+		tprintf(", ");
+		if ((tcp->u_arg[3] & (MS_BIND|MS_MOVE)) == 0)
+			printstr(tcp, tcp->u_arg[4], -1);
+		else
+			tprintf("%#lx", tcp->u_arg[4]);
 	}
 	return 0;
 }
