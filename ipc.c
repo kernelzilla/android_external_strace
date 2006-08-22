@@ -158,7 +158,7 @@ struct tcb *tcp;
 {
 	if (entering(tcp)) {
 		if (tcp->u_arg[0])
-			tprintf("%lu", tcp->u_arg[0]);
+			tprintf("%#lx", tcp->u_arg[0]);
 		else
 			tprintf("IPC_PRIVATE");
 		tprintf(", ");
@@ -307,7 +307,7 @@ struct tcb *tcp;
 {
 	if (entering(tcp)) {
 		if (tcp->u_arg[0])
-			tprintf("%lu", tcp->u_arg[0]);
+			tprintf("%#lx", tcp->u_arg[0]);
 		else
 			tprintf("IPC_PRIVATE");
 		tprintf(", %lu", tcp->u_arg[1]);
@@ -336,7 +336,7 @@ struct tcb *tcp;
 {
 	if (entering(tcp)) {
 		if (tcp->u_arg[0])
-			tprintf("%lu", tcp->u_arg[0]);
+			tprintf("%#lx", tcp->u_arg[0]);
 		else
 			tprintf("IPC_PRIVATE");
 		tprintf(", %lu", tcp->u_arg[1]);
