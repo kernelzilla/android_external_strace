@@ -421,7 +421,7 @@ fork_tcb(struct tcb *tcp)
 	if (nprocs == tcbtabsize) {
 		if (expand_tcbtab()) {
 			tcp->flags &= ~TCB_FOLLOWFORK;
-			fprintf(stderr, "sys_fork: tcb table full\n");
+			return 1;
 		}
 	}
 
@@ -483,10 +483,8 @@ struct tcb *tcp;
 			return 0;
 		if (syserror(tcp))
 			return 0;
-		if ((tcpchild = alloctcb(tcp->u_rval)) == NULL) {
-			fprintf(stderr, "sys_fork: tcb table full\n");
+		if ((tcpchild = alloctcb(tcp->u_rval)) == NULL)
 			return 0;
-		}
 		if (proc_open(tcpchild, 2) < 0)
 		  	droptcb(tcpchild);
 	}
@@ -842,10 +840,9 @@ struct tcb *tcp;
 		}
 		else
 #endif
-		if ((tcpchild = alloctcb(pid)) == NULL) {
+		if (fork_tcb(tcp) || (tcpchild = alloctcb(pid)) == NULL) {
 			if (bpt)
 				clearbpt(tcp);
-			fprintf(stderr, " [tcb table full]\n");
 			kill(pid, SIGKILL); /* XXX */
 			return 0;
 		}
@@ -979,8 +976,7 @@ struct tcb *tcp;
 			return 0;
 
 		pid = tcp->u_rval;
-		if ((tcpchild = alloctcb(pid)) == NULL) {
-			fprintf(stderr, " [tcb table full]\n");
+		if (fork_tcb(tcp) || (tcpchild = alloctcb(pid)) == NULL) {
 			kill(pid, SIGKILL); /* XXX */
 			return 0;
 		}
