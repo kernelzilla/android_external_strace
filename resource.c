@@ -45,9 +45,6 @@
 #endif
 #include <linux/quota.h>
 #endif /* LINUX */
-#ifdef SUNOS4
-#include <ufs/quota.h>
-#endif /* SUNOS4 */
 #if defined(SVR4) || defined(FREEBSD)
 #include <sys/times.h>
 #include <sys/time.h>
