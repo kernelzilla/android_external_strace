@@ -1854,6 +1854,7 @@ struct tcb *tcp;
 	return 0;
 }
 
+#if defined(SUNOS4) || defined(SVR4)
 int
 sys_fchroot(tcp)
 struct tcb *tcp;
@@ -1863,6 +1864,7 @@ struct tcb *tcp;
 	}
 	return 0;
 }
+#endif /* SUNOS4 || SVR4 */
 
 int
 sys_link(tcp)
@@ -2194,6 +2196,7 @@ sys_mknodat(struct tcb *tcp)
 }
 #endif
 
+#ifdef FREEBSD
 int
 sys_mkfifo(tcp)
 struct tcb *tcp;
@@ -2204,6 +2207,7 @@ struct tcb *tcp;
 	}
 	return 0;
 }
+#endif /* FREEBSD */
 
 int
 sys_fsync(tcp)
