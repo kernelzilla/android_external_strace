@@ -67,7 +67,6 @@
 # define IPC_64 0x100
 #endif
 
-extern const struct xlat openmodes[];
 extern void printsigevent(struct tcb *tcp, long arg);
 
 static const struct xlat msgctl_flags[] = {
@@ -409,14 +408,14 @@ struct tcb *tcp;
 #endif /* defined(LINUX) || defined(SUNOS4) || defined(FREEBSD) */
 
 #ifdef LINUX
-int sys_mq_open(tcp)
-struct tcb *tcp;
+int
+sys_mq_open(struct tcb *tcp)
 {
 	if (entering(tcp)) {
 		printpath(tcp, tcp->u_arg[0]);
 		tprintf(", ");
 		/* flags */
-		printflags(openmodes, tcp->u_arg[1] + 1, "O_???");
+		tprint_open_modes(tcp, tcp->u_arg[1]);
 		if (tcp->u_arg[1] & O_CREAT) {
 # ifndef HAVE_MQUEUE_H
 			tprintf(", %lx", tcp->u_arg[2]);
@@ -435,8 +434,8 @@ struct tcb *tcp;
 	return 0;
 }
 
-int sys_mq_timedsend(tcp)
-struct tcb *tcp;
+int
+sys_mq_timedsend(struct tcb *tcp)
 {
 	if (entering(tcp)) {
 		tprintf("%ld, ", tcp->u_arg[0]);
@@ -447,8 +446,8 @@ struct tcb *tcp;
 	return 0;
 }
 
-int sys_mq_timedreceive(tcp)
-struct tcb *tcp;
+int
+sys_mq_timedreceive(struct tcb *tcp)
 {
 	if (entering(tcp))
 		tprintf("%ld, ", tcp->u_arg[0]);
@@ -460,8 +459,8 @@ struct tcb *tcp;
 	return 0;
 }
 
-int sys_mq_notify(tcp)
-struct tcb *tcp;
+int
+sys_mq_notify(struct tcb *tcp)
 {
 	if (entering(tcp)) {
 		tprintf("%ld, ", tcp->u_arg[0]);
@@ -470,9 +469,8 @@ struct tcb *tcp;
 	return 0;
 }
 
-static void printmqattr(tcp, addr)
-struct tcb *tcp;
-long addr;
+static void
+printmqattr(struct tcb *tcp, long addr)
 {
 	if (addr == 0)
 		tprintf("NULL");
@@ -486,15 +484,15 @@ long addr;
 			return;
 		}
 		tprintf("{mq_flags=");
-		printflags(openmodes, attr.mq_flags + 1, "O_???");
+		tprint_open_modes(tcp, attr.mq_flags);
 		tprintf(", mq_maxmsg=%ld, mq_msgsize=%ld, mq_curmsg=%ld}",
 			attr.mq_maxmsg, attr.mq_msgsize, attr.mq_curmsgs);
 # endif
 	}
 }
 
-int sys_mq_getsetattr(tcp)
-struct tcb *tcp;
+int
+sys_mq_getsetattr(struct tcb *tcp)
 {
 	if (entering(tcp)) {
 		tprintf("%ld, ", tcp->u_arg[0]);

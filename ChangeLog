@@ -1,3 +1,85 @@
+2007-01-11  Dmitry V. Levin <ldv@altlinux.org>
+
+	Fix open(2) flags parser.
+	* defs.h (tprint_open_modes): New function.
+	* desc.c (sprint_open_modes): New function.
+	(sys_fcntl): Use tprint_open_modes() and sprint_open_modes().
+	* file.c (openmodes): Split xlat into open_access_modes and
+	open_mode_flags.
+	(tprint_open_modes): New function.
+	(decode_open): Use it.
+	* ipc.c (sys_mq_open, printmqattr): Likewise.
+	Fixes RH#222385.
+
+2007-01-11  Roland McGrath  <roland@redhat.com>
+
+	* configure.ac, NEWS: Version 4.5.15.
+	* debian/changelog, strace.spec: 4.5.15-1.
+
+	* debian/control (Uploaders): Add Frederik Schueler <fs@debian.org>.
+
+	* strace.spec (Release): Use %{?dist}.
+
+	* system.c [LINUX] (CTL_CPU): Define in case header is missing it.
+
+2006-12-27  Dmitry V. Levin <ldv@altlinux.org>
+
+	Add const qualifier to xlookup() return value.
+	* defs.h (xlookup): Add const qualifier to return value.
+	* desc.c (sprintflags): Likewise.
+	* process.c (printpriv): Update xlookup() use.
+	* signal.c (sprintsigmask): Add const qualifier to first argument and
+	return value.
+	* util.c (xlookup): Add const qualifier to return value.
+	(printxval): Update xlookup() use.
+
+2006-12-21  Dmitry V. Levin <ldv@altlinux.org>
+
+	Move counts code to separate file.
+	* count.c: New file.
+	* Makefile.am (strace_SOURCES): Add count.c.
+	* syscall.c (call_counts, countv, counts, shortest, time_cmp,
+	syscall_cmp, count_cmp, sortfun, overhead, set_sortby,
+	set_overhead, call_summary_pers, call_summary): Move to count.c
+	* count.c (count_syscall): New function.
+	* defs.h (count_syscall): Declare it.
+	* syscall.c (trace_syscall): Use it.
+
+2006-12-20  Dmitry V. Levin <ldv@altlinux.org>
+
+	* syscall.c (internal_syscall): Change conditions for internal_exit,
+	internal_fork, internal_clone, internal_exec and internal_wait
+	calls from switching on known scno values to switching on known
+	sysent[tcp->scno].sys_func values.
+	Fixes RH#179740.
+
+	Show system call summary for each personality.
+	* syscall.c (countv): New call_counts pointers array.
+	(counts): Convert to macro wrapper around countv.
+	(call_summary_pers): New function.
+	(call_summary): Use it for each personality.
+	Fixes RH#192193.
+
+2006-12-12  Dmitry V. Levin <ldv@altlinux.org>
+
+	Fix -ff -o behaviour.  Fix piping trace output.
+	* defs.h (newoutf): Remove.
+	(alloctcb): Rename to alloc_tcb.  Add alloctcb() macro wrapper
+	around alloc_tcb().
+	* process.c [!USE_PROCFS] (internal_clone, internal_fork):
+	Remove newoutf() call.
+	* strace.c (set_cloexec_flag, strace_fopen, strace_popen,
+	swap_uid): New functions.
+	(popen_pid): New variable.
+	(newoutf): Make static, use strace_fopen().
+	(main): Use strace_fopen() and strace_popen(), remove uids
+	swapping.  Do not open outfname when followfork > 1.
+	Reinitialize tcp->outf properly.
+	(alloctcb): Rename to alloc_tcb.  Use newoutf().
+	(trace): Check popen_pid.  Remove newoutf() call.
+	[USE_PROCFS] (proc_open, proc_poll_open): Use set_cloexec_flag().
+	Fixes RH#204950, RH#218435, Debian#353935.
+
 2006-12-10  Dmitry V. Levin <ldv@altlinux.org>
 
 	Enhance adjtimex parser.
