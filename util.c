@@ -702,7 +702,8 @@ char *laddr;
 				return 0;
 			}
 			/* But if not started, we had a bogus address. */
-			perror("ptrace: umoven");
+			if (addr != 0 && errno != EIO)
+				perror("ptrace: umoven");
 			return -1;
 		}
 		started = 1;
@@ -717,7 +718,7 @@ char *laddr;
 				/* Ran into 'end of memory' - stupid "printpath" */
 				return 0;
 			}
-			if (addr != 0)
+			if (addr != 0 && errno != EIO)
 				perror("ptrace: umoven");
 			return -1;
 		}
@@ -852,7 +853,8 @@ char *laddr;
 				/* Ran into 'end of memory' - stupid "printpath" */
 				return 0;
 			}
-			perror("umovestr");
+			if (addr != 0 && errno != EIO)
+				perror("umovestr");
 			return -1;
 		}
 		started = 1;
@@ -870,7 +872,8 @@ char *laddr;
 				/* Ran into 'end of memory' - stupid "printpath" */
 				return 0;
 			}
-			perror("umovestr");
+			if (addr != 0 && errno != EIO)
+				perror("umovestr");
 			return -1;
 		}
 		started = 1;
