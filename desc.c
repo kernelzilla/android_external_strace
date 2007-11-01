@@ -881,7 +881,7 @@ int
 sys_pselect6(struct tcb *tcp)
 {
 	int rc = decode_select(tcp, tcp->u_arg, BITNESS_CURRENT);
-	if (exiting(tcp)) {
+	if (entering(tcp)) {
 		struct {
 			void *ss;
 			unsigned long len;
@@ -890,7 +890,7 @@ sys_pselect6(struct tcb *tcp)
 			tprintf(", %#lx", tcp->u_arg[5]);
 		else {
 			tprintf(", {");
-			if (data.len < sizeof(sigset_t))
+			if (data.len < sizeof(long))
 				tprintf("%#lx", (long)data.ss);
 			else
 				print_sigset(tcp, (long)data.ss, 0);
