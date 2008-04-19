@@ -2312,8 +2312,7 @@ static const struct xlat direnttypes[] = {
 #endif
 
 int
-sys_getdents(tcp)
-struct tcb *tcp;
+sys_getdents(struct tcb *tcp)
 {
 	int i, len, dents = 0;
 	char *buf;
@@ -2396,8 +2395,7 @@ struct tcb *tcp;
 
 #if _LFS64_LARGEFILE
 int
-sys_getdents64(tcp)
-struct tcb *tcp;
+sys_getdents64(struct tcb *tcp)
 {
 	int i, len, dents = 0;
 	char *buf;
@@ -2449,6 +2447,10 @@ struct tcb *tcp;
 				d->d_namlen, d->d_namlen, d->d_name);
 		}
 #endif /* SUNOS4 */
+		if (!d->d_reclen) {
+			tprintf("/* d_reclen == 0, problem here */");
+			break;
+		}
 		i += d->d_reclen;
 		dents++;
 	}
@@ -2464,8 +2466,7 @@ struct tcb *tcp;
 
 #ifdef FREEBSD
 int
-sys_getdirentries(tcp)
-struct tcb * tcp;
+sys_getdirentries(struct tcb *tcp)
 {
 	int i, len, dents = 0;
 	long basep;
@@ -2500,6 +2501,10 @@ struct tcb * tcp;
 			printxval(direnttypes, d->d_type, "DT_???");
 			tprintf(", d_namlen=%u, d_name=\"%.*s\"}",
 				d->d_namlen, d->d_namlen, d->d_name);
+		}
+		if (!d->d_reclen) {
+			tprintf("/* d_reclen == 0, problem here */");
+			break;
 		}
 		i += d->d_reclen;
 		dents++;
