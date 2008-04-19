@@ -1,3 +1,123 @@
+2008-04-19  Dmitry V. Levin <ldv@altlinux.org>
+
+	* signalent.sh: Fix sort(1) old-style options.
+	* syscallent.sh: Likewise.
+	Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+
+	* count.c (call_summary_pers): Check calloc() return value.
+	Signed-off-by: "Yang Zhiguo" <yzgcsu@cn.fujitsu.com>
+
+2008-03-26  Roland McGrath  <roland@redhat.com>
+
+	* strace.spec (strace64_arches): Add sparc64.
+
+2007-11-20  Roland McGrath  <roland@redhat.com>
+
+	* CREDITS, ChangeLog: Converted contents to UTF8.
+
+2007-11-19  Roland McGrath  <roland@redhat.com>
+
+	* strace.spec: Add BuildRequires on libaio-devel, libacl-devel.
+
+2007-11-19  Andreas Schwab  <schwab@suse.de>
+
+	* process.c (sys_ptrace) [IA64]: For PTRACE_PEEKDATA,
+	PTRACE_PEEKTEXT and PTRACE_PEEKUSER the data is returned directly.
+
+	* linux/syscallent.h: Fix argument count for getdents64.
+	* linux/arm/syscallent.h: Likewise.
+	* linux/m68k/syscallent.h: Likewise.
+	* linux/x86_64/syscallent.h: Likewise.
+
+	* linux/ia64/syscallent.h: Use sys_getdents64.
+	* linux/sh/syscallent.h: Likewise.
+
+2007-11-06  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* strace.c [LINUX] (droptcb): Recurse on TCP->parent if it is a
+	TCB_EXITING zombie group leader.
+	* test/childthread.c: New file.
+	* test/.cvsignore, test/Makefile: Add it.
+	Code advisory: Roland McGrath
+	Fixes RH#354261.
+
+2007-11-03  Roland McGrath  <roland@redhat.com>
+
+	* process.c (prctl_options): Add numerous constants.
+	From Sami Farin <safari@u.safari.iki.fi>.
+	Fixes RH#364401.
+
+2007-11-03  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* strace.c (main): Move the STARTUP_CHILD call before setting up the
+	signal handlers.  New comment about the valid internal states.
+
+2007-11-02  Thiemo Seufer <ths@networkno.de>
+
+	* signal.c (m_siginfo_t): Add for MIPS.
+	(sys_sigreturn): struct sigcontext on MIPS has no sigset_t member,
+	acquire the signal mask with the same trick as on Sparc.
+	Fixes Debian#448802.
+
+2007-11-01  Roland McGrath  <roland@redhat.com>
+
+	* util.c (string_quote): Return nonzero if the string was unterminated.
+	(printstr): Use that value instead of just our own test.
+	(printpathn): Likewise.
+	Fixes RH#358241.
+
+	* linux/mips/syscallent.h: Fix argument count for fadvise64_64.
+	From Paul Mundt <lethal@linux-sh.org>.
+
+	* linux/mips/syscallent.h: Fix argument count for lookup_dcookie.
+	From Paul Mundt <lethal@linux-sh.org>.
+
+	* linux/sh64/syscallent.h: Fix SYS_socket_subcall check.
+	From Paul Mundt <lethal@linux-sh.org>.
+
+	* linux/sh/syscallent.h: Update numerous calls.
+	From Paul Mundt <lethal@linux-sh.org>.
+
+2007-09-22  Dmitry V. Levin <ldv@altlinux.org>
+
+	* desc.c (sys_pselect6): Decode signal mask when entering syscall.
+	Relax signal mask size check.
+
+	* time.c (print_timespec, sprint_timespec): New functions.
+	* defs.h (print_timespec, sprint_timespec): Declare them.
+	* desc.c (sys_io_getevents): Use print_timespec.
+	* stream.c (sys_ppoll): Likewise.
+	(decode_poll): Use sprint_timespec.
+
+2007-09-22  Alan Curry <pacman@world.std.com>
+	    Dmitry V. Levin <ldv@altlinux.org>
+
+	* stream.c (decode_poll): Rearrange so that arguments are decoded
+	and printed on syscall entry, except for revents and the output
+	timespec which are now printed in the auxstr.
+	(sys_poll): Print the input timeout argument on syscall entry.
+	[LINUX] (sys_ppoll): Likewise.
+	Fixes Debian#369651.
+
+2007-09-22  Dmitry V. Levin <ldv@altlinux.org>
+
+	* desc.c (sprintflags): Remove static qualifier, add "prefix"
+	argument, move function to ...
+	* util.c (sprintflags): ... here.
+	* defs.h (sprintflags): Declare it.
+
+2007-11-01  Roland McGrath  <roland@redhat.com>
+
+	* syscall.c (get_scno) [ARM]: Check TCB_WAITEXECVE.
+	Reported by Bernhard Fischer <rep.dot.nop@gmail.com>.
+
+	* net.c (sockpacketoptions): Make PACKET_ADD_MEMBERSHIP and
+	PACKET_DROP_MEMBERSHIP conditional.
+	From Bernhard Fischer <rep.dot.nop@gmail.com>.
+
+	* configure.ac: Match sh64* for SH64, sh* for SH.
+	Reported by Bernhard Fischer <rep.dot.nop@gmail.com>.
+
 2007-10-01  Dmitry V. Levin <ldv@altlinux.org>
 
 	* net.c (printsock): Output AF_UNIX socket address using
