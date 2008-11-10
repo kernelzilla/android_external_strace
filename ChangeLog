@@ -1,5 +1,42 @@
-2008-04-19  Dmitry V. Levin <ldv@altlinux.org>
+2008-10-22  Dmitry V. Levin <ldv@altlinux.org>
 
+	Handle socket type flags introduced in linux 2.6.27.
+	* net.c (socktypes): Add SOCK_DCCP.
+	(sock_type_flags): New xlat structure.
+	(tprint_sock_type): New function.
+	(sys_socket, sys_socketpair): Use it to parse socket type and
+	socket type flags.
+
+2008-09-29  Dmitry V. Levin <ldv@altlinux.org>
+
+	* strace.c (startup_child): Save child pid for future use.
+	(main): Exit/kill ourself with straced child's exitcode/signal.
+	(trace): If signalled process pid matches the saved child pid,
+	save the signal number.  If terminated process pid matches the
+	saved child pid, save its exit status.
+	Patch from Denys Vlasenko <dvlasenk@redhat.com>
+
+2008-09-12  Tomas Pospisek  <tpo@sourcepole.ch>
+	    Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* strace.1 (DESCRIPTION): New description of unfinished system calls
+	and system calls restarting.
+
+2008-09-03  Dmitry V. Levin <ldv@altlinux.org>
+
+	* desc.c (sys_fcntl): Do not initialize auxstr for failed syscall.
+	* process.c (sys_fork, sys_rfork) [USE_PROCFS]: Likewise.
+	* signal.c (sys_signal): Likewise.
+	* stream.c (internal_stream_ioctl): Likewise.
+	* time.c (sys_adjtimex): Likewise.
+	* syscall.c (trace_syscall): If RVAL_STR is set, then
+	print auxstr for failed syscall as well.
+
+	* syscall.c (is_restart_error): New function.
+	* defs.h (is_restart_error): Declare it.
+
+	* linux/dummy.h (sys_nanosleep): Uncouple from sys_adjtime().
+	* time.c (sys_nanosleep): New function, based on is_restart_error().
 	* process.c (sys_prctl): Decode PR_SET_PDEATHSIG, PR_GET_PDEATHSIG,
 	PR_SET_DUMPABLE, PR_GET_DUMPABLE, PR_SET_KEEPCAPS, PR_GET_KEEPCAPS.
 	Fix PR_GET_UNALIGN decoder.
