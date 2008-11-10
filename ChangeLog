@@ -1,3 +1,58 @@
+2008-11-09  Dmitry V. Levin  <ldv@altlinux.org>
+
+	* util.c (string_quote): Fix support for NUL-terminated string.
+	Add comments.
+	(printpathn): Fix the case when "..." was appended to the output
+	but no truncation was actually made.  Add comments.
+	(printstr): Fix memory allocation.  Fix two cases when "..." was
+	appended to the output but no truncation was actually made.
+	Add comments.
+
+2008-10-23  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Implement parsers for new linux syscalls.
+	* desc.c (do_dup2, [LINUX] sys_dup3): New functions.
+	(sys_dup2): Use do_dup2.
+	[LINUX] (sys_epoll_create1): New function.
+	[LINUX] (do_eventfd, sys_eventfd2): New functions.
+	[LINUX] (sys_eventfd): Use do_eventfd.
+	* net.c (do_pipe, [LINUX] sys_pipe2): New functions.
+	(sys_pipe): Use do_pipe.
+	* signal.c [LINUX] (do_signalfd, sys_signalfd4): New functions.
+	[LINUX] (sys_signalfd): Use do_signalfd.
+	* linux/syscall.h: Declare new sys_* functions.
+	* linux/syscallent.h: Hook up signalfd4, eventfd2, epoll_create1,
+	dup3, pipe2, inotify_init1.
+	* linux/x86_64/syscallent.h: Hook up paccept, signalfd4, eventfd2,
+	epoll_create1, dup3, pipe2, inotify_init1.
+
+2008-10-23  Mike Frysinger  <vapier@gentoo.org>
+
+	Port strace to the Blackfin architecture.
+	* configure.ac: Add bfin to supported architectures.
+	* process.c: Skip u_fpvalid/u_fpstate for Blackfin architecture.
+	(change_syscall): Support Blackfin architecture.
+	* syscall.c: Declare r0 for Blackfin architecture.
+	(get_scno): Decode Blackfin syscall number.
+	(syscall_fixup): Extract Blackfin return value.
+	(get_error): Decode Blackfin return value.
+	(force_result): Poke Blackfin return value.
+	(syscall_enter): Extract Blackfin syscall arguments.
+	* defs.h: Define TCB_WAITEXECVE for Blackfin architecture.
+	* linux/syscall.h (sys_sram_alloc): Declare for Blackfin
+	architecture.
+	* system.c (sys_sram_alloc): Decode Blackfin sram_alloc() syscall.
+	* util.c (getpc): Handle PC on Blackfin architecture.
+	(printcall): Likewise.
+	* linux/bfin/ioctlent.h, linux/bfin/syscallent.h: New Blackfin
+	headers.
+	* Makefile.am (EXTRA_DIST): Add linux/bfin/ioctlent.h and
+	linux/bfin/syscallent.h.
+
+2008-09-18  Mike Frysinger  <vapier@gentoo.org>
+
+	* configure.ac: Accept uclinux hosts as linux.
+
 2008-10-22  Dmitry V. Levin <ldv@altlinux.org>
 
 	Handle socket type flags introduced in linux 2.6.27.
