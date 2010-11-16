@@ -1066,14 +1066,12 @@ struct tcb *tcp;
 	return 0;
 }
 
-#if defined(SUNOS4) || defined(FREEBSD)
 int
 sys_sigblock(tcp)
 struct tcb *tcp;
 {
 	return sys_sigsetmask(tcp);
 }
-#endif /* SUNOS4 || FREEBSD */
 
 #endif /* !SVR4 */
 
@@ -1216,7 +1214,6 @@ struct tcb *tcp;
 	}
 }
 
-#ifdef SVR4
 int
 sys_sighold(tcp)
 struct tcb *tcp;
@@ -1226,7 +1223,6 @@ struct tcb *tcp;
 	}
 	return 0;
 }
-#endif /* SVR4 */
 
 #endif /* HAVE_SIGACTION */
 
@@ -1717,14 +1713,12 @@ struct tcb *tcp;
 	return 0;
 }
 
-#if defined(FREEBSD) || defined(SUNOS4)
 int
 sys_killpg(tcp)
 struct tcb *tcp;
 {
 	return sys_kill(tcp);
 }
-#endif /* FREEBSD || SUNOS4 */
 
 #ifdef LINUX
 int
@@ -1756,7 +1750,6 @@ struct tcb *tcp;
 	return 0;
 }
 
-#ifdef SVR4
 int sys_sigwait(tcp)
 struct tcb *tcp;
 {
@@ -1776,7 +1769,6 @@ struct tcb *tcp;
 	}
 	return 0;
 }
-#endif /* SVR4 */
 
 #ifdef LINUX
 
