@@ -991,34 +991,10 @@ struct tcb *tcp;
 		return -1;
 
 	if (!(tcp->flags & TCB_INSYSCALL)) {
-	  	static int currpers=-1;
-		long val;
-
-		/* Check CS register value. On x86-64 linux it is:
-		 * 	0x33	for long mode (64 bit)
-		 * 	0x23	for compatibility mode (32 bit)
-		 * It takes only one ptrace and thus doesn't need
-		 * to be cached.
-		 */
-		if (upeek(pid, 8*CS, &val) < 0)
-			return -1;
-		switch(val)
-		{
-			case 0x23: currpers = 1; break;
-			case 0x33: currpers = 0; break;
-			default:
-				fprintf(stderr, "Unknown value CS=0x%02X while "
-					 "detecting personality of process "
-					 "PID=%d\n", (int)val, pid);
-				currpers = current_personality;
-				break;
-		}
-#if 0
-		/* This version analyzes the opcode of a syscall instruction.
+		 /* Analyze the opcode of a syscall
 		 * (int 0x80 on i386 vs. syscall on x86-64)
 		 * It works, but is too complicated.
 		 */
-		unsigned long val, rip, i;
 
 		if(upeek(pid, 8*RIP, &rip)<0)
 			perror("upeek(RIP)");
@@ -1045,7 +1021,7 @@ struct tcb *tcp;
 					"PID=%d\n", (int)call, pid);
 				break;
 		}
-#endif
+
 		if(currpers != current_personality)
 		{
 			char *names[]={"64 bit", "32 bit"};
