@@ -89,6 +89,8 @@ int pflag_seen = 0;
 
 /* Sometimes we want to print only succeeding syscalls. */
 int not_failing_only = 0;
+static int exit_code = 0;
+static int strace_child = 0;
 
 char *username = NULL;
 uid_t run_uid;
@@ -580,7 +582,8 @@ Process %u attached - interrupt to quit\n",
 				progname, filename);
 			exit(1);
 		}
-		switch (pid = fork()) {
+		strace_child = pid = fork();
+		switch (pid) {
 		case -1:
 			perror("strace: fork");
 			cleanup();
@@ -714,7 +717,17 @@ Process %u attached - interrupt to quit\n",
 	if (trace() < 0)
 		exit(1);
 	cleanup();
-	exit(0);
+	fflush(NULL);
+	if (exit_code > 0xff) {
+		/* Child was killed by a signal, mimic that.  */
+		exit_code &= 0xff;
+		signal(exit_code, SIG_DFL);
+		raise(exit_code);
+		/* Paranoia - what if this signal is not fatal?
+		   Exit with 128 + signo then.  */
+		exit_code += 128;
+	}
+	exit(exit_code);
 }
 
 void
@@ -1653,7 +1666,7 @@ int pfd;
 	switch (fork()) {
 	case -1:
 		perror("fork");
-		_exit(0);
+		_exit(1);
 	case 0:
 		break;
 	default:
@@ -1677,7 +1690,7 @@ int pfd;
 
 	if (getrlimit(RLIMIT_NOFILE, &rl) < 0) {
 		perror("getrlimit(RLIMIT_NOFILE, ...)");
-		_exit(0);
+		_exit(1);
 	}
 	n = rl.rlim_cur;
 	for (i = 0; i < n; i++) {
@@ -2199,6 +2212,8 @@ Process %d attached (waiting for parent)\n",
 			continue;
 		}
 		if (WIFSIGNALED(status)) {
+			if (pid == strace_child)
+				exit_code = 0x100 | WTERMSIG(status);
 			if (!cflag
 			    && (qual_flags[WTERMSIG(status)] & QUAL_SIGNAL)) {
 				printleader(tcp);
@@ -2218,6 +2233,8 @@ Process %d attached (waiting for parent)\n",
 			continue;
 		}
 		if (WIFEXITED(status)) {
+			if (pid == strace_child)
+				exit_code = WEXITSTATUS(status);
 			if (debug)
 				fprintf(stderr, "pid %u exited\n", pid);
 			if ((tcp->flags & TCB_ATTACHED)
