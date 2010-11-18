@@ -27,7 +27,14 @@
  *
  *	$Id: syscallent.h,v 1.34 2005/06/07 23:21:24 roland Exp $
  */
-
+/* ARM specific syscalls */
+        { 5,    0,      printargs,		"SYS_0"		}, /* 0 */
+        { 5,    0,      printargs,		"breakpoint"	}, /* 1 */
+        { 5,    0,      printargs,		"cacheflush"	}, /* 2 */
+        { 5,    0,      printargs,		"usr26"		}, /* 3 */
+        { 5,    0,      printargs,		"usr32"		}, /* 4 */
+        { 5,    0,      printargs,		"set_tls"	}, /* 5 */
+        { 0,    0,      sys_setup,		"setup"		}, /* 0 */
 	{ 0,	0,	sys_setup,		"setup"		}, /* 0 */
 	{ 1,	TP,	sys_exit,		"_exit", SYS_exit }, /* 1 */
 	{ 0,	TP,	sys_fork,		"fork", SYS_fork }, /* 2 */
@@ -282,7 +289,7 @@
 	{ 2,	0,	sys_fremovexattr,	"fremovexattr"	}, /* 237 */
 	{ 2,	TS,	sys_kill,		"tkill"		}, /* 238 */
 	{ 4,	TF,	sys_sendfile64,		"sendfile64"	}, /* 239 */
-	{ 5,	0,	sys_futex,		"futex"		}, /* 240 */
+	{ 6,	0,	sys_futex,		"futex"		}, /* 240 */
 	{ 3,	0,	sys_sched_setaffinity,	"sched_setaffinity" },/* 241 */
 	{ 3,	0,	sys_sched_getaffinity,	"sched_getaffinity" },/* 242 */
 	{ 1,	0,	sys_set_thread_area,	"set_thread_area" }, /* 243 */
