@@ -527,6 +527,27 @@ static const struct xlat whence[] = {
 };
 
 #ifndef HAVE_LONG_LONG_OFF_T
+#if defined (LINUX_MIPSN32)
+int
+sys_lseek(tcp)
+struct tcb *tcp;
+{
+	long long offset;
+	int _whence;
+
+	if (entering(tcp)) {
+		tprintf("%ld, ", tcp->u_arg[0]);
+		offset = tcp->ext_arg[1];
+		_whence = tcp->u_arg[2];
+		if (_whence == SEEK_SET)
+			tprintf("%llu, ", offset);
+		else
+			tprintf("%lld, ", offset);
+		printxval(whence, _whence, "SEEK_???");
+	}
+	return RVAL_UDECIMAL;
+}
+#else /* !LINUX_MIPSN32 */
 int
 sys_lseek(tcp)
 struct tcb *tcp;
@@ -546,6 +567,7 @@ struct tcb *tcp;
 	}
 	return RVAL_UDECIMAL;
 }
+#endif /* LINUX_MIPSN32 */
 #endif
 
 #ifdef LINUX
@@ -585,7 +607,9 @@ struct tcb *tcp;
 {
     if (entering(tcp)) {
 	tprintf("%ld, %lld, %ld", tcp->u_arg[0],
-# if defined IA64 || defined X86_64 || defined ALPHA
+# if defined LINUX_MIPSN32
+		tcp->ext_arg[1], tcp->u_arg[2]
+# elif defined IA64 || defined X86_64 || defined ALPHA || defined LINUX_MIPSN64
 		(long long int) tcp->u_arg[1], tcp->u_arg[2]
 # else
 		LONG_LONG(tcp->u_arg[1], tcp->u_arg[2]), tcp->u_arg[3]
@@ -2831,7 +2855,10 @@ struct tcb *tcp;
     if (entering(tcp)) {
 	tprintf("%ld, %lld, %lld, ",
 		tcp->u_arg[0],
-# if defined IA64 || defined X86_64 || defined ALPHA
+#if defined LINUX_MIPSN32
+		tcp->ext_arg[1], tcp->ext_arg[2]);
+	printxval(advise, tcp->u_arg[3], "POSIX_FADV_???");
+#elif defined IA64 || defined X86_64 || defined ALPHA || defined LINUX_MIPSN64
 		(long long int) tcp->u_arg[1], (long long int) tcp->u_arg[2]);
 	printxval(advise, tcp->u_arg[3], "POSIX_FADV_???");
 #else
