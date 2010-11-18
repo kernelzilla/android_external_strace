@@ -1202,7 +1202,7 @@ struct tcb *tcp;
 		}
 		return 0;
 	}
-	else {
+	else if (!syserror(tcp)) {
 		switch (tcp->u_rval) {
 		    case (long) SIG_ERR:
 			tcp->auxstr = "SIG_ERR"; break;
@@ -1215,6 +1215,7 @@ struct tcb *tcp;
 		}
 		return RVAL_HEX | RVAL_STR;
 	}
+	return 0;
 }
 
 int

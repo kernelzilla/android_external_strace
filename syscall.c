@@ -2469,6 +2469,8 @@ strace: out of memory for call counts\n");
 						strerror(u_error));
 				break;
 			}
+			if ((sys_res & RVAL_STR) && tcp->auxstr)
+				tprintf(" (%s)", tcp->auxstr);
 		}
 		else {
 			if (sys_res & RVAL_NONE)

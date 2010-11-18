@@ -1100,7 +1100,7 @@ int arg;
 	}
 	if (exiting(tcp)) {
 		tprintf("}");
-		if (timod && tcp->u_rval) {
+		if (timod && tcp->u_rval && !syserror(tcp)) {
 			tcp->auxstr = xlookup (tli_errors, tcp->u_rval);
 			return RVAL_STR + 1;
 		}

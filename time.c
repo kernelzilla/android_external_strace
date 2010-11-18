@@ -506,6 +506,8 @@ sys_adjtimex(struct tcb *tcp)
 #endif
 			tprintf("}");
 		}
+		if (syserror(tcp))
+			return 0;
 		tcp->auxstr = xlookup(adjtimex_state, tcp->u_rval);
 		if (tcp->auxstr)
 			return RVAL_STR;
