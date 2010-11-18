@@ -155,11 +155,7 @@
 	{ 5,	TP,	sys_clone,		"clone", SYS_clone }, /* 120 */
 	{ 2,	0,	sys_setdomainname,	"setdomainname"	}, /* 121 */
 	{ 1,	0,	sys_uname,		"uname"		}, /* 122 */
-#ifdef M68K
-	{ 4,	0,	sys_cacheflush,		"cacheflush"	}, /* 123 */
-#else
 	{ 3,	0,	sys_modify_ldt,		"modify_ldt"	}, /* 123 */
-#endif
 	{ 1,	0,	sys_adjtimex,		"adjtimex"	}, /* 124 */
 	{ 3,	0,	sys_mprotect,		"mprotect"	}, /* 125 */
 	{ 3,	TS,	sys_sigprocmask,	"sigprocmask"	}, /* 126 */

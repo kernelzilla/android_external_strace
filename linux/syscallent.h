@@ -27,7 +27,13 @@
  *
  *	$Id: syscallent.h,v 1.34 2005/06/07 23:21:24 roland Exp $
  */
-
+/* ARM specific syscalls */
+	{ 5,	0,	printargs,		"SYS_0"		}, /* 0 */
+	{ 5,	0,	printargs,		"breakpoint"	}, /* 1 */
+	{ 5,	0,	printargs,		"cacheflush"	}, /* 2 */
+	{ 5,	0,	printargs,		"usr26"		}, /* 3 */
+	{ 5,	0,	printargs,		"usr32"		}, /* 4 */
+	{ 5,	0,	printargs,		"set_tls"	}, /* 5 */
 	{ 0,	0,	sys_setup,		"setup"		}, /* 0 */
 	{ 1,	TP,	sys_exit,		"exit", SYS_exit }, /* 1 */
 	{ 0,	TP,	sys_fork,		"fork", SYS_fork }, /* 2 */
@@ -319,23 +325,23 @@
 	{ 2,	0,	sys_mq_notify,		"mq_notify"	}, /* 278 */
 	{ 3,	0,	sys_mq_getsetattr,	"mq_getsetattr"	}, /* 279 */
 	{ 5,	TP,	sys_waitid,		"waitid"	}, /* 280 */
-	{ 5,	0,	printargs,		"SYS_281"	}, /* 281 */
-	{ 5,	0,	printargs,		"SYS_282"	}, /* 282 */
-	{ 5,	0,	printargs,		"sys_kexec_load" }, /* 283 */
-	{ 5,	TP,	sys_waitid,		"waitid", SYS_waitid }, /* 284 */
-	{ 5,	0,	printargs,		"SYS_285"	}, /* 285 */
-	{ 5,	0,	printargs,		"add_key"	}, /* 286 */
-	{ 4,	0,	printargs,		"request_key"	}, /* 287 */
-	{ 5,	0,	printargs,		"keyctl"	}, /* 288 */
-	{ 3,	0,	printargs,		"ioprio_set"	}, /* 289 */
-	{ 2,	0,	printargs,		"ioprio_get"	}, /* 290 */
-	{ 0,	TD,	printargs,		"inotify_init"	}, /* 291 */
-	{ 3,	TD,	sys_inotify_add_watch,	"inotify_add_watch" }, /* 292 */
-	{ 2,	TD,	sys_inotify_rm_watch,	"inotify_rm_watch" }, /* 293 */
-	{ 4,	0,	printargs,		"migrate_pages"	}, /* 294 */
-	{ 4,	TD|TF,	sys_openat,		"openat"	}, /* 295 */
-	{ 3,	TD|TF,	sys_mkdirat,		"mkdirat"	}, /* 296 */
-	{ 4,	TD|TF,	sys_mknodat,		"mknodat"	}, /* 297 */
+	{ 3,	TN,	sys_socket,		"socket"	}, /* 281 */
+	{ 3,	TN,	sys_bind,		"bind"		}, /* 282 */
+	{ 3,	TN,	sys_connect,		"connect"	}, /* 283 */
+	{ 2,	TN,	sys_listen,		"listen"	}, /* 284 */
+	{ 3,	TN,	sys_accept,		"accept"	}, /* 285 */
+	{ 3,	TN,	sys_getsockname,	"getsockname"	}, /* 286 */
+	{ 3,	TN,	sys_getpeername,	"getpeername"	}, /* 287 */
+	{ 4,	TN,	sys_socketpair,		"socketpair"	}, /* 288 */
+	{ 4,	TN,	sys_send,		"send"		}, /* 289 */
+	{ 6,	TN,	sys_sendto,		"sendto"	}, /* 290 */
+	{ 4,	TN,	sys_recv,		"recv"		}, /* 291 */
+	{ 6,	TN,	sys_recvfrom,		"recvfrom"	}, /* 292 */
+	{ 2,	TN,	sys_shutdown,		"shutdown"	}, /* 293 */
+	{ 5,	TN,	sys_setsockopt,		"setsockopt"	}, /* 294 */
+	{ 5,	TN,	sys_getsockopt,		"getsockopt"	}, /* 295 */
+	{ 3,	TN,	sys_sendmsg,		"sendmsg"	}, /* 296 */
+	{ 3,	TN,	sys_recvmsg,		"recvmsg"	}, /* 297 */
 	{ 5,	TD|TF,	sys_fchownat,		"fchownat"	}, /* 298 */
 	{ 3,	TD|TF,	sys_futimesat,		"futimesat"	}, /* 299 */
 	{ 4,	TD|TD,	sys_newfstatat,		"fstatat64"	}, /* 300 */
