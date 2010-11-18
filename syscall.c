@@ -591,7 +591,7 @@ static const struct subcall subcalls_table[] = {
 };
 #endif /* FREEBSD */
 
-#if !(defined(LINUX) && ( defined(ALPHA) || defined(MIPS) ))
+#if !(defined(LINUX) && ( defined(ALPHA) || defined(MIPS) || defined(__ARM_EABI__) ))
 
 static const int socket_map [] = {
 	       /* SYS_SOCKET      */ 97,
