@@ -101,6 +101,7 @@ int sys_waitid(), sys_fadvise64(), sys_fadvise64_64();
 int sys_mbind(), sys_get_mempolicy(), sys_set_mempolicy(), sys_move_pages();
 int sys_arch_prctl();
 int sys_io_setup(), sys_io_submit(), sys_io_cancel(), sys_io_getevents(), sys_io_destroy();
+int sys_signalfd4(), sys_eventfd2(), sys_epoll_create1(), sys_dup3(), sys_pipe2();
 
 /* sys_socketcall subcalls */
 
