@@ -1995,6 +1995,10 @@ int bitness;
 	int exited = 0;
 
 	if (entering(tcp)) {
+#ifdef LINUX
+		int pid = tcp->u_arg[0];
+		tprintf("%d, ", pid);
+#else
 		/*
 		 * Sign-extend a 32-bit value when that's what it is.
 		 */
@@ -2002,6 +2006,7 @@ int bitness;
 		if (personality_wordsize[current_personality] < sizeof pid)
 			pid = (long) (int) pid;
 		tprintf("%ld, ", pid);
+#endif
 	} else {
 		/* status */
 		if (!tcp->u_arg[1])
